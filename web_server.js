@@ -14,7 +14,7 @@ app.get('/css/scss', function (request, response) {
 });
 */
 
-app.get('/api/css/scss', function (req, res) {
+app.post('/api/css/scss', function (req, res) {
     fs.writeFileSync('file.scss', req.body.data.scss, () => {
     });
     sass.render({
