@@ -8,6 +8,12 @@ const less = require('less');
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+/*
+app.get('/css/scss', function (request, response) {
+    response.send("Test was successful - snocss");
+});
+*/
+
 app.post('/api/css/scss', function (req, res) {
     fs.writeFileSync('file.scss', req.body.data.scss, () => {
     });

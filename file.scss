@@ -1,23 +1,35 @@
-div.article {
-  span{
-
+@mixin button-bg($bg) {
+  background: $bg;
+  &:hover {
+    background:darken($bg,8%);
+    transition: all 0.3s ease;
   }
-  .title{
-
+  &:active {
+    background:darken($bg,25%);
   }
 }
 
-@function invert($color, $amount: 100%) {
-  $inverse: change-color($color, $hue: hue($color) + 180);
-  @return mix($inverse, $color, $amount);
+.btn {
+  color:white;
+  text-decoration:none;
+  padding:5px 10px;
+  border-radius:3px;
+  font-family: 'Poiret One', cursive;
+  font-size:2em;
 }
 
-$primary-color: #036;
-.header {
-  background-color: invert($primary-color, 80%);
+.btn-green {
+  @include button-bg(#2ecc71);
 }
 
+.btn-blue {
+  @include button-bg(#3498db);
+}
 
-.header {
-  background-color: #523314;
+.btn-yellow{
+  @include button-bg(#f1c40f);
+}
+
+.btn-red {
+  @include button-bg(#e74c3c);
 }

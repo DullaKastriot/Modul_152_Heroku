@@ -1,7 +1,7 @@
 {
   "name": "modul_152_heroku",
   "version": "1.0.0",
-  "description": "",
+  "description": "\"# Modul_152_Heroku\"",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,6 +16,13 @@
     "less": "^4.1.1",
     "node-sass": "^5.0.0"
   },
-  "devDependencies": {}
-
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DullaKastriot/Modul_152_Heroku.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DullaKastriot/Modul_152_Heroku/issues"
+  },
+  "homepage": "https://github.com/DullaKastriot/Modul_152_Heroku#readme"
 }
