@@ -4,7 +4,7 @@ const port = 3000;
 const sass = require('node-sass');
 const fs = require("fs");
 const less = require('less');
-// A small test.
+// A small test. Really?
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
