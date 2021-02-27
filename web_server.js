@@ -14,7 +14,7 @@ app.get('/css/scss', function (request, response) {
 });
 */
 
-app.post('/api/css/scss', function (req, res) {
+app.get('/api/css/scss', function (req, res) {
     fs.writeFileSync('file.scss', req.body.data.scss, () => {
     });
     sass.render({
@@ -46,4 +46,4 @@ app.post('/api/css/less', function (req, res) {
     });
 });
 
-app.listen(process.env.PORT || port);
+app.listen(process.env.PORT);
