@@ -1,0 +1,39 @@
+.btn {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  font-family: 'Poiret One', cursive;
+  font-size: 2em; }
+
+.btn-green {
+  background: #2ecc71; }
+  .btn-green:hover {
+    background: #26ab5f;
+    transition: all 0.3s ease; }
+  .btn-green:active {
+    background: #176437; }
+
+.btn-blue {
+  background: #3498db; }
+  .btn-blue:hover {
+    background: #2383c4;
+    transition: all 0.3s ease; }
+  .btn-blue:active {
+    background: #16527a; }
+
+.btn-yellow {
+  background: #f1c40f; }
+  .btn-yellow:hover {
+    background: #cba50c;
+    transition: all 0.3s ease; }
+  .btn-yellow:active {
+    background: #796307; }
+
+.btn-red {
+  background: #e74c3c; }
+  .btn-red:hover {
+    background: #df2e1b;
+    transition: all 0.3s ease; }
+  .btn-red:active {
+    background: #921e12; }

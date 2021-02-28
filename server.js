@@ -1,24 +1,19 @@
-const express = require("express");
+const express = require('express');
+const sass = require('node-sass');
+const less = require('less');
+const fs = require('fs');
 const app = express();
 const port = 3000;
-const sass = require('node-sass');
-const fs = require("fs");
-const less = require('less');
-// A small test. Really? Another one...
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-/*
-app.get('/css/scss', function (request, response) {
-    response.send("Test was successful - snocss");
-});
-*/
-
-app.post('/api/css/scss', function (req, res) {
-    fs.writeFileSync('file.scss', req.body.data.scss, () => {
+// SCSS Endpoint. Takes an SCSS file and transpiles it into CSS file
+app.post('/api/css/scss', function (request, res) {
+    fs.writeFileSync('test.scss', request.body.data.scss, () => {
     });
     sass.render({
-        file: "file.scss"
+        file: 'test.scss'
     }, function (error, root) {
         if (!error) {
             res.json({
@@ -32,18 +27,21 @@ app.post('/api/css/scss', function (req, res) {
     });
 });
 
-app.post('/api/css/less', function (req, res) {
-    less.render(req.body.data.less, function (error, root) {
+// Same same. But diffrent. But still the same!
+// Transpiles LESS to CSS
+app.post('/api/css/less', function (request, restore) {
+    less.render(request.body.data.less, function (error, root) {
         if (!error) {
-            res.json({
+            restore.json({
                 data: {
                     css: root.css
                 }
             });
         } else {
-            res.status(400).send(error);
+            restore.status(400).send(error);
         }
     });
 });
 
-app.listen(process.env.PORT);
+// Added port variable in case to listen to port 3000
+app.listen(process.env.PORT || port);
