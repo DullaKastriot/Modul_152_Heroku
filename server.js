@@ -55,7 +55,7 @@ const multerStorage = multer.memoryStorage();
 
 // Filter files
 const multerFilter = (req, file, callback) => {
-    if (file.mimeType.startsWith('image')) {
+    if (file.mimetype.startsWith('image')) {
         callback(null, true);
     }
     else {
@@ -83,7 +83,7 @@ const resizeImages = async(req, res, next) => {
     // Create date to be used in creation. Might come in handy to know when I uploaded what thing.
     const today = new Date();
     const year = today.getFullYear();
-    const month = `${today.getMonth + 1}`.padStart(2, "0");
+    const month = `${today.getMonth() + 1}`.padStart(2, "0");
 
     const filename = {
         file: `${Date.now()}`
