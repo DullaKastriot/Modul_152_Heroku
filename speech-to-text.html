@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+</head>
+<body>
+
+<button onclick="start()">Start the recording</button>
+<button onclick="end()">End the recording</button>
+<select name="languages" id="languages">
+    <option value="">Chose a Language!</option>
+    <option value="de-DE">German</option>
+    <option value="en-GB">English</option>
+    <option value="fr-FR">French</option>
+</select>
+
+<p>
+    <textarea id="textField" name="textField" rows="4" cols="50">
+    </textarea>
+</p>
+
+<script>
+    var listening = new webkitSpeechRecognition();
+    listening.continuous = true;
+    listening.interimResults = true;
+
+    listening.onstart = function() {
+        console.log("The recording has begun!!! ALL HAIL THE MICROPHONE!!!!");
+    }
+    listening.onresult = function(event) {
+        // Empty variable. We need this later, trust me I am an engineer!
+        var textFieldContent = "";
+
+        // event is the Object that holds all the words we speak and many other things. Cool right?
+        var current = event.resultIndex;
+
+        // Now we need to transcript that said stuff! I had no clue you can do this! That is so cool!
+        var transcription = event.results[current][0].transcript;
+
+        // Now we add the transcripted stuff to the tesxtfield. Neat, right?
+        textFieldContent += transcription;
+        $("#textField").val(textFieldContent);
+    }
+    listening.onerror = function(err) {
+        console.log(err);
+    }
+    listening.onend = function() {
+        console.log("The recording has ended!!! PRAIS THE LORD!!!!!!");
+    }
+
+    // JQuery document :D
+    $(document).ready(function() {
+        $("#languages").change(function() {
+            if (this.value === "de-DE") {
+                listening.lang = "de-DE";
+                console.log("IT IS GERMAN");
+            }
+            else if (this.value === "en-GB") {
+                listening.lang = "en-GB";
+                console.log("IT IS ENGLIHS!!!!!!");
+            }
+            else {
+                listening.lang = "fr-FR";
+                console.log("IT IS FRENCH!!!!!!");
+            }
+        })
+    })
+
+    function start() {
+        listening.start();
+    }
+
+    function end() {
+        listening.stop();
+    }
+
+</script>
+
+</body>
+</html>

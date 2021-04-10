@@ -9,6 +9,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.urlencoded({extended: true}));
+app.use('/file', express.static('file'));
 app.use(express.json());
 
 // SCSS Endpoint. Takes an SCSS file and transpiles it into CSS file
@@ -56,6 +57,12 @@ const multerStorage = multer.memoryStorage();
 // Filter files
 const multerFilter = (req, file, callback) => {
     if (file.mimetype.startsWith('image')) {
+        callback(null, true);
+    }
+    else if (file.mimetype.startsWith('vtt')) {
+        callback(null, true);
+    }
+    else if (file.mimetype.startsWith('audio')) {
         callback(null, true);
     }
     else {
@@ -133,7 +140,6 @@ const resizeImages = async(req, res, next) => {
     req.body.file = getDataUploaded.file;
     next();
 }
-
 const createPicture = async(req, res, next) => {
     res.status(200) .json({
         status: "succsess",
@@ -143,6 +149,20 @@ const createPicture = async(req, res, next) => {
 
 // Third endpoint.
 app.post("/api/file", uploadImages, resizeImages, createPicture);
+
+// Fifth endpoint
+app.post("/api/audio", upload.fields([{name: 'audio', maxCount: 1}, {name: 'vtt', maxCount: 1}]), function (req, res, next) {
+    // console.log(req.file); // see what got uploaded
+    var uploadLocation = __dirname + '/upload/audio/' + req.file.originalname;
+    console.log(uploadLocation);
+    console.log("ARNY WAS HERE");
+    res.json({
+        data: {
+            audio: "https://module152kdu.herokuapp.com/file" + req.files['audio'][0].filename,
+            vtt: "https://module152kdu.herokuapp.com/file" + req.files['vtt'][0].filename,
+        }
+    });
+});
 
 // Added port variable in case to listen to port 3000
 app.listen(process.env.PORT || port);
