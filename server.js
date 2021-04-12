@@ -54,10 +54,7 @@ app.use(express.json());
 
 // Filter files
 const multerFilter = (req, file, callback) => {
-    if (file.mimetype.indexOf('image') > -1) {
-        callback(null, true);
-    }
-    if (file.mimetype.indexOf('mp3') > -1 || file.mimetype.indexOf('text/vtt') > -1) {
+    if (file.mimetype.indexOf('image') > -1 || file.mimetype.indexOf('audio') > -1 || file.mimetype.indexOf('text/vtt') > -1) {
         callback(null, true);
     }
     else {
@@ -71,17 +68,14 @@ const multerStorage = multer.diskStorage({
         cb(null, __dirname + "/file");
     },
     filename: function(req, file, cb){
-        // TODO
         const dateAndTime = Date.now().toString();
-        console.log(file);
-        console.log("DIS IS DA FILE!!!!");
-        cb(null, file.filename + dateAndTime);
+        cb(null, dateAndTime + file.filename);
     }
 });
 
 const upload = multer({
     storage: multerStorage,
-    // fileFilter: multerFilter
+    fileFilter: multerFilter
 });
 
 // Here we crate the upload fields. Uncomment the second field in case you want to upload multiple images.

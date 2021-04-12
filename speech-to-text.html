@@ -6,10 +6,12 @@
     <script src="node_modules/jquery/dist/jquery.js"></script>
 </head>
 <body>
+<div id="buttons">
+    <img src="https://i.pinimg.com/736x/97/78/bd/9778bd4a8ff6eb4103261d73b6a7ae42.jpg" style="width: 100px; height: 100px; margin-right: 10px" id="buttonStart" onclick="start()">
+    <img src="https://cdn3.iconfinder.com/data/icons/social-messaging-productivity-6-1/128/microphone2-disabled-512.png" style="width: 100px; height: 100px;" id="buttonEnd" onclick="end()">
+</div>
 
-<button onclick="start()">Start the recording</button>
-<button onclick="end()">End the recording</button>
-<select name="languages" id="languages">
+<select name="languages" id="languages" style="margin-top: 20px;">
     <option value="">Chose a Language!</option>
     <option value="de-DE">German</option>
     <option value="en-GB">English</option>
@@ -33,7 +35,7 @@
         // Empty variable. We need this later, trust me I am an engineer!
         var textFieldContent = "";
 
-        // event is the Object that holds all the words we speak and many other things. Cool right?
+        // "event" is the Object that holds all the words we speak and many other things. Cool right?
         var current = event.resultIndex;
 
         // Now we need to transcript that said stuff! I had no clue you can do this! That is so cool!
@@ -42,6 +44,9 @@
         // Now we add the transcripted stuff to the tesxtfield. Neat, right?
         textFieldContent += transcription;
         $("#textField").val(textFieldContent);
+        setTimeout(function () {
+            document.getElementById('textField').value = "";
+        }, 5000);
     }
     listening.onerror = function(err) {
         console.log(err);
