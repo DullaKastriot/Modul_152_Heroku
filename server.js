@@ -81,7 +81,7 @@ const multerStorage = multer.diskStorage({
 
 const upload = multer({
     storage: multerStorage,
-    fileFilter: multerFilter
+    // fileFilter: multerFilter
 });
 
 // Here we crate the upload fields. Uncomment the second field in case you want to upload multiple images.
