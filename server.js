@@ -51,24 +51,33 @@ app.post('/api/css/less', function (request, restore) {
 app.use(express.static(`${__dirname}/upload`));
 app.use(express.json());
 
-// Store the picture objects as storage
-const multerStorage = multer.memoryStorage();
 
 // Filter files
 const multerFilter = (req, file, callback) => {
-    if (file.mimetype.startsWith('image')) {
+    if (file.mimetype.indexOf('image') > -1) {
         callback(null, true);
     }
-    else if (file.mimetype.startsWith('vtt')) {
-        callback(null, true);
-    }
-    else if (file.mimetype.startsWith('audio')) {
+    if (file.mimetype.indexOf('mp3') > -1 || file.indexOf('vtt') > -1) {
         callback(null, true);
     }
     else {
         callback(null, false);
     }
 }
+
+// Store the objects as storage
+const multerStorage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, __dirname + "/file");
+    },
+    filename: function(req, file, cb){
+        // TODO
+        const dateAndTime = Date.now();
+        console.log(file);
+        console.log("DIS IS DA FILE!!!!");
+        cb(null, file.filename + dateAndTime);
+    }
+});
 
 const upload = multer({
     storage: multerStorage,
@@ -151,10 +160,7 @@ const createPicture = async(req, res, next) => {
 app.post("/api/file", uploadImages, resizeImages, createPicture);
 
 // Fifth endpoint
-app.post("/api/audio", upload.fields([{name: 'audio', maxCount: 1}, {name: 'vtt', maxCount: 1}]), function (req, res, next) {
-    // console.log(req.file); // see what got uploaded
-    var uploadLocation = __dirname + '/upload/audio/' + req.file.originalname;
-    console.log(uploadLocation);
+app.post("/api/audio", upload.fields([{name: 'audio'}, {name: 'vtt'}]), function (req, res, next) {
     console.log("ARNY WAS HERE");
     res.json({
         data: {
