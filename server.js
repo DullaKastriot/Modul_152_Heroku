@@ -69,13 +69,13 @@ const multerStorage = multer.diskStorage({
     },
     filename: function(req, file, cb){
         const dateAndTime = Date.now().toString();
-        cb(null, dateAndTime + file.filename);
+        cb(null, dateAndTime + "_" + file.originalname);
     }
 });
 
 const upload = multer({
     storage: multerStorage,
-    /*fileFilter: multerFilter*/
+    fileFilter: multerFilter
 });
 
 // Here we crate the upload fields. Uncomment the second field in case you want to upload multiple images.
