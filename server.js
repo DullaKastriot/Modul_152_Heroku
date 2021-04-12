@@ -57,7 +57,7 @@ const multerFilter = (req, file, callback) => {
     if (file.mimetype.indexOf('image') > -1) {
         callback(null, true);
     }
-    if (file.mimetype.indexOf('mp3') > -1 || file.mimetype.indexOf('vtt') > -1) {
+    if (file.mimetype.indexOf('mp3') > -1 || file.mimetype.indexOf('text/vtt') > -1) {
         callback(null, true);
     }
     else {
@@ -72,7 +72,7 @@ const multerStorage = multer.diskStorage({
     },
     filename: function(req, file, cb){
         // TODO
-        const dateAndTime = Date.now();
+        const dateAndTime = Date.now().toString();
         console.log(file);
         console.log("DIS IS DA FILE!!!!");
         cb(null, file.filename + dateAndTime);
