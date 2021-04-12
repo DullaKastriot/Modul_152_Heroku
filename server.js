@@ -158,8 +158,8 @@ app.post("/api/audio", upload.fields([{name: 'audio'}, {name: 'vtt'}]), function
     console.log("ARNY WAS HERE");
     res.json({
         data: {
-            audio: "https://module152kdu.herokuapp.com/file" + req.files['audio'][0].filename,
-            vtt: "https://module152kdu.herokuapp.com/file" + req.files['vtt'][0].filename,
+            audio: "https://module152kdu.herokuapp.com/file" + "_" + req.files['audio'][0].filename,
+            vtt: "https://module152kdu.herokuapp.com/file" + "_" + req.files['vtt'][0].filename,
         }
     });
 });
