@@ -57,7 +57,7 @@ const multerFilter = (req, file, callback) => {
     if (file.mimetype.indexOf('image') > -1) {
         callback(null, true);
     }
-    if (file.mimetype.indexOf('mp3') > -1 || file.indexOf('vtt') > -1) {
+    if (file.mimetype.indexOf('mp3') > -1 || file.mimetype.indexOf('vtt') > -1) {
         callback(null, true);
     }
     else {
