@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WebSockets - Simple chat</title>
+    <!-- Css style options. Nothing crazy. -->
+    <style>
+        * {
+            font-family: tahoma;
+            font-size: 12px;
+            padding: 0px;
+            margin: 0px;
+        }
+        p {
+            line-height: 18px;
+        }
+        div {
+            width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #content {
+            padding: 5px;
+            background: #ddd;
+            border-radius: 5px;
+            overflow-y: scroll;
+            border: 1px solid #CCC;
+            margin-top: 10px;
+            height: 160px;
+        }
+        #input {
+            border-radius: 2px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            padding: 5px;
+            width: 400px;
+        }
+        #status {
+            width: 88px;
+            display: block;
+            float: left;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+<div>
+    <span id="status">Connecting...</span>
+    <input type="text" id="input" disabled="disabled"/>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+<script>
+    $(function () {
+        "use strict";
+        // For better performance - to avoid searching in DOM
+        var content = $('#content');
+        var input = $('#input');
+        var status = $('#status');
+        // Color is assigned by the server
+        var myColor = false;
+        // My name sent to the server
+        var myName = false;
+        // When user is running mozilla then use it's built-in WebSocket
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+        // If the browser doesn't support WebSocket, just show a notification and exit
+        if (!window.WebSocket) {
+            content.html($('<p>',
+                { text:'Sorry, but your browser doesn\'t support WebSocket.'}
+            ));
+            input.hide();
+            $('span').hide();
+            return;
+        }
+        // Open connection with 8080 port
+        var connection = new WebSocket('ws://127.0.0.1:8080');
+        connection.onopen = function () {
+            content.text("Welcome to the club!");
+            // First we want users to enter their names
+            input.removeAttr('disabled');
+            status.text('Choose name:');
+        };
+        connection.onerror = function (error) {
+            // Just in there were some problems with connection...
+            content.html($('<p>', {
+                text: 'Sorry, but there\'s some problem with your '
+                    + 'connection or the server is down.'
+            }));
+        };
+        // Most important part - incoming messages
+        connection.onmessage = function (message) {
+            // Try to parse JSON message. Because we know that the server
+            // always returns JSON this should work without any problem but
+            // we should make sure that the massage is not chunked or
+            // otherwise damaged.
+            try {
+                var json = JSON.parse(message.data);
+            }
+            catch (e) {
+                console.log('Invalid JSON: ', message.data);
+                return;
+            }
+            // First response from the server with users color. And after that the user can send messages. Hurray!!
+            if (json.type === 'color') {
+                myColor = json.data;
+                status.text(myName + ': ').css('color', myColor);
+                input.removeAttr('disabled').focus();
+            }
+            // Hey! I know that type! I have been using it in the server.js remember?
+            else if (json.type === 'history') {
+                // Loops through the json object Entire message history insert every single message to the chat window
+                for (var i=0; i < json.data.length; i++) {
+                    addMessage(json.data[i].author, json.data[i].text,
+                        json.data[i].color, new Date(json.data[i].time));
+                }
+            }
+            else if (json.type === 'message') {
+                // Lets the user write another message
+                input.removeAttr('disabled');
+                addMessage(json.data.author, json.data.text,
+                    json.data.color, new Date(json.data.time));
+            }
+            else {
+                console.log('Hmm..., I\'ve never seen JSON like this:', json);
+            }
+        };
+        /**
+         * Send message when user presses Enter key
+         */
+        input.keydown(function(e) {
+            if (e.keyCode === 13) {
+                var msg = $(this).val();
+                // Simple Error handeling. Does not need to be super fancy
+                if (!msg) {
+                    alert('Ladies and gentlemen. Would you please stop trying to enter an empty message? It is rather annoying.');
+                    return;
+                }
+                // Send the message as an ordinary text
+                connection.send(msg);
+                $(this).val('');
+                // The forst part of the message is always going to be the name.
+                if (myName === false) {
+                    myName = msg;
+                }
+            }
+        });
+
+        /**
+         * If the server is not able to respond in 15 seconds (if he is down) then show an error message
+         * to notify the user that something is wrong (server is down).
+         */
+        setInterval(function() {
+            if (connection.readyState !== 1) {
+                status.text('Error');
+                input.attr('disabled', 'disabled').val(
+                    'Unable to communicate with the WebSocket server.');
+            }
+        }, 15000);
+
+        /**
+         * Add message to the chat the window. In the first moment we append a <p> and <span> to the content as well
+         * as the colors. In the end, it shows the name of the user, an @, the time of the day as well as the message
+         * at the end.
+         */
+        function addMessage(author, message, color, dt) {
+            content.prepend('<p><span style="color:' + color + '">'
+                + author + '</span> @ ' + (dt.getHours() < 10 ? '0'
+                    + dt.getHours() : dt.getHours()) + ':'
+                + (dt.getMinutes() < 10
+                    ? '0' + dt.getMinutes() : dt.getMinutes())
+                + ': ' + message + '</p>');
+        }
+    });
+</script>
+</body>
+</html>
