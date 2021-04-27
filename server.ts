@@ -12,8 +12,8 @@ var history = [];
 var clients = [];
 
 /**
- * Helper function for escaping input strings. No clue what this does. But it was in the tutorial.
- * Used to create html string entities to later be broadcasted.t
+ * Helper function for escaping input strings. In other words, this functions actually makes it happen, so that
+ * special characters can be used in the chat without causing any damage whatsoever.
  */
 function htmlEntities(str) {
     return String(str)
@@ -27,33 +27,34 @@ var colors = [ 'red', 'green', 'blue', 'magenta', 'purple', 'plum', 'orange' ];
 colors.sort(function(a,b) { return Math.random() > 0.5; } );
 
 /**
- * HTTP server.
+ * Creates http server. This one will be the server on which the websocket Server will be running.
  */
 var server = http.createServer(function(request, response) {
-    // Not important for us. We're writing WebSocket server and not HTTP server.
-    console.log("Still a log to see if it works!");
+    console.log("The http server is done.");
 });
-// Server listenes to above defined port 8080 (Could be 8080 as well) and prints the Date as well as the Port to console
+// Server listenes to above defined port 8080 (Could be other port as well) and prints the Date as well as the Port to
+// console when firstly connected.
 server.listen(webSocketsServerPort, function() {
     console.log((new Date()) + " Server is listening on port "
         + webSocketsServerPort);
 });
 
 /**
- * WebSocket server. Not sure wy the httpServer is used. Looked it up in the tutorial.
+ * WebSocket server. This bad boy upgrades the http server to a websocket server. It is not ment to handle requests of
+ * any kind (and it won't!). So this is purely an upgrate to the http protocol. Websocket on it's own cannot serve any
+ * kind of data.
  */
 var wsServer = new webSocketServer({
     httpServer: server
 });
 
-// The below callback function is called every time a user connects to the server. Every other function like onmessage
-// and onclose is incorperated into it.
+// The below callback function is called every time a user connects to the server. The first part actually logs the
+// request origin. In or case it is mostly going to be http://localhost:63342 or something similar.
 wsServer.on('request', function(request) {
     console.log((new Date()) + ' Connection from origin '
         + request.origin + '.');
 
-    // If user connects to the server, you can check on 'request.origin' to make sure if he actually is connected.
-    // Also taken from the tutorial. Just saying.
+    // Accept the connection when the user is connected to the server.
     var connection = request.accept(null, request.origin);
 
     // We need to know the user index in order to remove them from the array on close event. So we create an 'index' and

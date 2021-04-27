@@ -73,9 +73,10 @@
             $('span').hide();
             return;
         }
-        // Open connection with a 8080 port
+        // Open connection with 8080 port
         var connection = new WebSocket('ws://127.0.0.1:8080');
         connection.onopen = function () {
+            content.text("Welcome to the club!");
             // First we want users to enter their names
             input.removeAttr('disabled');
             status.text('Choose name:');
@@ -119,7 +120,8 @@
                 input.removeAttr('disabled');
                 addMessage(json.data.author, json.data.text,
                     json.data.color, new Date(json.data.time));
-            } else {
+            }
+            else {
                 console.log('Hmm..., I\'ve never seen JSON like this:', json);
             }
         };
@@ -137,8 +139,6 @@
                 // Send the message as an ordinary text
                 connection.send(msg);
                 $(this).val('');
-                // Disable the input field to make the user wait until the server sends back response
-                input.attr('disabled', 'disabled');
                 // The forst part of the message is always going to be the name.
                 if (myName === false) {
                     myName = msg;
@@ -147,8 +147,8 @@
         });
 
         /**
-         * If the server wasn't able to respond in 15 seconds then show an error message
-         * to notify the user that something is wrong.
+         * If the server is not able to respond in 15 seconds (if he is down) then show an error message
+         * to notify the user that something is wrong (server is down).
          */
         setInterval(function() {
             if (connection.readyState !== 1) {
@@ -159,7 +159,9 @@
         }, 15000);
 
         /**
-         * Add message to the chat the window. Also completely copy pasted from the tutorial.
+         * Add message to the chat the window. In the first moment we append a <p> and <span> to the content as well
+         * as the colors. In the end, it shows the name of the user, an @, the time of the day as well as the message
+         * at the end.
          */
         function addMessage(author, message, color, dt) {
             content.prepend('<p><span style="color:' + color + '">'
